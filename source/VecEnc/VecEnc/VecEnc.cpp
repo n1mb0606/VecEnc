@@ -77,14 +77,7 @@ public:
         cout << "(" << GetX() << "," << GetY() << ")" << endl;
     }
 };
-int CharToInt(char c) {
-    return ((c >= '0') && (c <= '9')) ? int(c - '0') : int(c - 'A' + 10);
-}
-char IntToChar(int i) {
-    return ((i >= 0) && (i <= 9)) ? char(i + '0') : char(i + 'A' - 10);
-}
 int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP);
-int FindVecNum(vector<Point> Map, Point Vec);
 void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize);
 int main()
 {
@@ -99,15 +92,7 @@ int main()
     Point VecPoint;
     Point VecPoint1;
     Point VecPoint2;
-
-    for (int i = 0; i < 6; i++) {
-        vector<int> v;
-        EncMap.push_back(v);
-    }
-    for (int i = 0; i < 6; i++) {
-        vector<int> v;
-        EncDATA.push_back(v);
-    }
+    
     EncMap = { {'A', '1', '2', '3', 'B','C' },
                 {'4', '5', '6', '7','D','E'},
                 {'8', '9', '0', 'F','G','H'},
@@ -155,17 +140,29 @@ int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP) {
     CurP.SetPos(NumPos.GetX(), NumPos.GetY());
     return ret;
 }
-int FindVecNum(vector<Point> Map, Point Vec) {
-    int ret = -1;
-    for (int i = 0; i < Map.size(); i++) {
-        if ((Map[i].GetX() == Vec.GetX()) && (Map[i].GetY() == Vec.GetY())) {
-            ret = i;
-            return ret;
-        }
-    }
-    return ret;
-}
 void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
+    /*
+    void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize)
+    - Description
+    Split a vector.
+    ex) Point(4,5) to Point(2, 3) and Point(2, 2) or
+                      Point(1, 3) and Point(3, 2) etc.
+    - Parameters
+    Point VecP : Vector to Devide.
+    Point& p1 : First Devided Vector from VecP.
+    Point& p2 : Second Devided Vecotr from VecP.
+    int MapSize : Map size to make minimum and maximum point
+    - Return
+    void
+
+    - Variables
+    Point OptP : Optimized Point. Make negative Point(ex. Point(-1, -1)) to positive Point(1,1)
+    Point MidP : Mid Point. Random Point between origin point to Optimized point.
+
+    int MinX, MinY, MaxX, MaxY : Minimum and maximum values to limit random values.
+
+    int PlaneNum : Make vary Optimized Point.
+    */
     Point OptP;
     Point MidP;
 
@@ -173,7 +170,7 @@ void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
     int MaxX = MapSize - 1, MaxY = MapSize - 1;
     int PlaneNum = 0;
 
-    //make positive pos
+    //Make Negative Point to Positive Point.
     if (VecP.GetX() < 0) {
         OptP.SetPosX(VecP.GetX() + MapSize);
     }
@@ -188,6 +185,7 @@ void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
     }
     //plane for varity..
     //0 org plane, 1 right plane, 2 right down plane, 3 down plane
+
     
     PlaneNum = rand() % 4;
     if (OptP.GetX() == (MapSize - 1)) {
@@ -216,6 +214,8 @@ void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
             }
         }
     }
+
+    //Make limits to make random Point(MidP).
     switch (PlaneNum)
     {
     case 1:
@@ -240,7 +240,7 @@ void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
         break;
     }
 
-    
+    //Check Divided by zero, Make a random Point(MidP).
     if (MaxX == MinX) { MidP.SetPosX(MinX); }
     else {
         MidP.SetPosX(rand() % (MaxX - MinX) + MinX);
@@ -250,12 +250,7 @@ void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
         MidP.SetPosY(rand() % (MaxY - MinY) + MinY);
     }
     
-
+    //Assign Divided Points.
     p1 = MidP;
     p2.SetPos(OptP.GetX() - MidP.GetX(), OptP.GetY() - MidP.GetY());
 }
-
-/*
-* 평문 -(평문 맵)> 벡터 -> 벡터 분할(2개) -> 복문
-* ex E -> 1A
-*/
