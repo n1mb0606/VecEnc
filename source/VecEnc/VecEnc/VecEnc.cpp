@@ -78,11 +78,13 @@ public:
     }
 };
 int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP);
-void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize);
+void RandVecSpl(Point VecP, Point& p1, Point& p2, int MapSize);
+char FindChar(Point& CurP, vector<vector<int>> map, Point Vec1, Point Vec2);
+int CharToVec(char encVec, vector<vector<int>> map, Point& DecVec);
 int main()
 {
     //string DecDATA = "1A201FE";
-    string DecDATA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string DecStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     vector<vector<int>> EncMap;
     vector<vector<int>> EncDATA;
     string EncStr;
@@ -109,9 +111,9 @@ int main()
     
     
 
-    for (int i = 0; i < DecDATA.size(); i++) {
-        if (FindVec(CursPoint, EncMap, DecDATA[i], VecPoint)) {
-            VecSpl(VecPoint, VecPoint1, VecPoint2, EncDATA.size());
+    for (int i = 0; i < DecStr.size(); i++) {
+        if (FindVec(CursPoint, EncMap, DecStr[i], VecPoint)) {
+            RandVecSpl(VecPoint, VecPoint1, VecPoint2, EncDATA.size());
             EncStr.push_back(EncDATA[VecPoint1.GetX()][VecPoint1.GetY()]);
             EncStr.push_back(EncDATA[VecPoint2.GetX()][VecPoint2.GetY()]);
         }
@@ -120,6 +122,25 @@ int main()
         cout << i<< "_" << EncStr[i] << endl;
     }
 
+   
+    Point DecCPoint;
+    DecCPoint.SetPos(StPoint.GetX(), StPoint.GetY());
+
+    string DecString;
+    Point DecV1, DecV2;
+    char DecChar;
+    for (int i = 0; i < EncStr.size(); i += 2) {
+        CharToVec(EncStr[i], EncDATA, DecV1);
+        CharToVec(EncStr[size_t(i) + 1], EncDATA, DecV2);
+        //cout << "vec1" << DecV1.GetX() << "," << DecV1.GetY() << endl;
+        //cout << "vec2" << DecV2.GetX() << "," << DecV2.GetY() << endl;
+        DecString.push_back(FindChar(DecCPoint, EncMap, DecV1, DecV2));
+    }
+
+    for (char e : DecString) {
+        cout << e;
+    }
+    cout << endl;
     return 0;
 }
 int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP) {
@@ -140,7 +161,7 @@ int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP) {
     CurP.SetPos(NumPos.GetX(), NumPos.GetY());
     return ret;
 }
-void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
+void RandVecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
     /*
     void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize)
     - Description
@@ -253,4 +274,27 @@ void VecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
     //Assign Divided Points.
     p1 = MidP;
     p2.SetPos(OptP.GetX() - MidP.GetX(), OptP.GetY() - MidP.GetY());
+}
+int CharToVec(char encVec, vector<vector<int>> map, Point& DecVec) {
+    int len = map.size();
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            if (map[i][j] == encVec) {
+                DecVec.SetPosX(i);
+                DecVec.SetPosY(j);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+char FindChar(Point& CurP, vector<vector<int>> map, Point Vec1, Point Vec2) {
+    int len = map.size();
+    Point OptP;
+    OptP.SetPosX((CurP.GetX() + Vec1.GetX() + Vec2.GetX()) % len);
+    OptP.SetPosY((CurP.GetY() + Vec1.GetY() + Vec2.GetY()) % len);
+    cout << "optp" << OptP.GetX() << "," << OptP.GetY() << endl;
+
+    CurP.SetPos(OptP.GetX(), OptP.GetY());
+    return  map[OptP.GetX()][OptP.GetY()];    
 }
