@@ -81,10 +81,12 @@ int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP);
 void RandVecSpl(Point VecP, Point& p1, Point& p2, int MapSize);
 char FindChar(Point& CurP, vector<vector<int>> map, Point Vec1, Point Vec2);
 int CharToVec(char encVec, vector<vector<int>> map, Point& DecVec);
+int RandPntGen(Point& RandPoint, Point& EndPoint, int MapSize);
+void SplitVector(Point& FirstVec, Point& SecondVec, Point SplPoint, Point EndPoint);
 int main()
 {
     //string DecDATA = "1A201FE";
-    string DecStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string DecStr = "HELLOWORLD1357";
     vector<vector<int>> EncMap;
     vector<vector<int>> EncDATA;
     string EncStr;
@@ -94,7 +96,8 @@ int main()
     Point VecPoint;
     Point VecPoint1;
     Point VecPoint2;
-    
+    Point RandPoint;
+
     EncMap = { {'A', '1', '2', '3', 'B','C' },
                 {'4', '5', '6', '7','D','E'},
                 {'8', '9', '0', 'F','G','H'},
@@ -113,7 +116,8 @@ int main()
 
     for (int i = 0; i < DecStr.size(); i++) {
         if (FindVec(CursPoint, EncMap, DecStr[i], VecPoint)) {
-            RandVecSpl(VecPoint, VecPoint1, VecPoint2, EncDATA.size());
+            RandPntGen(RandPoint, VecPoint, EncMap.size());
+            SplitVector(VecPoint1, VecPoint2, RandPoint, VecPoint);
             EncStr.push_back(EncDATA[VecPoint1.GetX()][VecPoint1.GetY()]);
             EncStr.push_back(EncDATA[VecPoint2.GetX()][VecPoint2.GetY()]);
         }
@@ -146,20 +150,19 @@ int main()
 int FindVec(Point& CurP, vector<vector<int>> map, int num, Point& VecP) {
     int len = map.size();
     Point NumPos;
-    bool ret = false;
 
     for (int i = 0; i < len; i++) {
         for (int j = 0; j < len; j++) {
             if (map[i][j] == num) {
                 NumPos.SetPos(i, j);
-                ret = true;
+
+                VecP.SetPos((NumPos - CurP).GetX(), (NumPos - CurP).GetY());
+                CurP.SetPos(NumPos.GetX(), NumPos.GetY());
+                return true;
             }
         }
-    }
-
-    VecP.SetPos((NumPos - CurP).GetX(), (NumPos - CurP).GetY());
-    CurP.SetPos(NumPos.GetX(), NumPos.GetY());
-    return ret;
+    }    
+    return false;
 }
 void RandVecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
     /*
@@ -274,6 +277,102 @@ void RandVecSpl(Point VecP, Point& p1, Point& p2, int MapSize) {
     //Assign Divided Points.
     p1 = MidP;
     p2.SetPos(OptP.GetX() - MidP.GetX(), OptP.GetY() - MidP.GetY());
+}
+int RandPntGen(Point& RandPoint, Point& EndPoint, int MapSize) {
+    Point OptP;
+    Point MidP;
+
+    int MinX = 0, MinY = 0;
+    int MaxX = MapSize - 1, MaxY = MapSize - 1;
+    int PlaneNum = 0;
+
+    //Make Negative Point to Positive Point.
+    if (EndPoint.GetX() < 0) {
+        OptP.SetPosX(EndPoint.GetX() + MapSize);
+    }
+    else {
+        OptP.SetPosX(EndPoint.GetX());
+    }
+    if (EndPoint.GetY() < 0) {
+        OptP.SetPosY(EndPoint.GetY() + MapSize);
+    }
+    else {
+        OptP.SetPosY(EndPoint.GetY());
+    }
+    //plane for varity..
+    //0 org plane, 1 right plane, 2 right down plane, 3 down plane
+
+
+    PlaneNum = rand() % 4;
+    if (OptP.GetX() == (MapSize - 1)) {
+        if (OptP.GetY() == (MapSize - 1)) {
+            PlaneNum = 0;
+        }
+        else {
+            if (rand() % 2) {
+                PlaneNum = 3;
+            }
+            else {
+                PlaneNum = 0;
+            }
+        }
+    }
+    if (OptP.GetY() == (MapSize - 1)) {
+        if (OptP.GetX() == (MapSize - 1)) {
+            PlaneNum = 0;
+        }
+        else {
+            if (rand() % 2) {
+                PlaneNum = 1;
+            }
+            else {
+                PlaneNum = 0;
+            }
+        }
+    }
+
+    //Make limits to make random Point(MidP).
+    switch (PlaneNum)
+    {
+    case 1:
+        OptP.SetPosX(OptP.GetX() + MapSize);
+        MinX = OptP.GetX() - MapSize + 1;
+        MaxY = OptP.GetY();
+        break;
+    case 2:
+        OptP.SetPosX(OptP.GetX() + MapSize);
+        OptP.SetPosY(OptP.GetY() + MapSize);
+        MinX = OptP.GetX() - MapSize + 1;
+        MinY = OptP.GetY() - MapSize + 1;
+        break;
+    case 3:
+        OptP.SetPosY(OptP.GetY() + MapSize);
+        MinY = OptP.GetY() - MapSize + 1;
+        MaxX = OptP.GetX();
+        break;
+    default:
+        MaxX = OptP.GetX();
+        MaxY = OptP.GetY();
+        break;
+    }
+
+    //Check Divided by zero, Make a random Point(MidP).
+    if (MaxX == MinX) { MidP.SetPosX(MinX); }
+    else {
+        MidP.SetPosX(rand() % (MaxX - MinX) + MinX);
+    }
+    if (MaxY == MinY) { MidP.SetPosY(MinY); }
+    else {
+        MidP.SetPosY(rand() % (MaxY - MinY) + MinY);
+    }
+
+    RandPoint.SetPos(MidP.GetX(), MidP.GetY());
+    EndPoint.SetPos(OptP.GetX(), OptP.GetY());
+    return true;
+}
+void SplitVector(Point& FirstVec, Point& SecondVec, Point SplPoint, Point EndPoint) {
+    FirstVec = SplPoint;
+    SecondVec.SetPos(EndPoint.GetX() - SplPoint.GetX(), EndPoint.GetY() - SplPoint.GetY());
 }
 int CharToVec(char encVec, vector<vector<int>> map, Point& DecVec) {
     int len = map.size();
