@@ -139,7 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EncPart.cpp" />
     <ClCompile Include="VecEnc.cpp" />
+    <ClCompile Include="VecEncTest.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="DecPart.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DecPart.h" />
+    <ClInclude Include="EncPart.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="VecEnc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
