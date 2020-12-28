@@ -49,11 +49,16 @@ int main()
         Encrypter.SetStrToEnc(str);
         Encrypter.Encrypt();
 
+        Encrypter.PrtStP();
+        Encrypter.PrtEndP();
         cout << "EncStr : " << Encrypter.GetEncStr() << endl;
-
+        cout << "-------------------" << endl;
         
         Decrypter.SetStrToDec(Encrypter.GetEncStr());
         Decrypter.Decrypt();
+
+        Decrypter.PrtStP();
+        Decrypter.PrtEndP();
 
         cout << "DecStr : " << Decrypter.GetDecStr() << endl;
         cout << "===================" << endl;

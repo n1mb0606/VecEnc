@@ -44,6 +44,11 @@ public:
 
 	int IsCharToVecMapEmpty();
 	int IsVecToCharMapEmpty();
+
+	void PrtStat();
+	void PrtStP();
+	void PrtEndP();
+	void PrtCurP();
 private:
 	void InitCurP();
 };

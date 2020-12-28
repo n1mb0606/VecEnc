@@ -14,9 +14,11 @@ int VecEnc::SetStPoint(const int x, const int y) {
 	else { return false; }
 	if ((y >= StP.GetYMinLimit()) && (y <= StP.GetYMaxLimit())) { StP.SetPosY(y); }
 	else { return false; }
+	CurP.SetPos(StP.GetX(), StP.GetY());
 	return true;
 }
 int VecEnc::SetStrToEnc(const std::string StrinToSet) {
+	std::cout << "SETSTRTOENC" << std::endl;
 	StrToEnc = StrinToSet;
 	return StrToEnc.size();
 }
@@ -67,6 +69,7 @@ int VecEnc::Encrypt() {
 			SplitVector(Vec1, Vec2, RandVec, Vec);
 			EncStr.push_back(VecToCharMap[Vec1.GetX()][Vec1.GetY()]);
 			EncStr.push_back(VecToCharMap[Vec2.GetX()][Vec2.GetY()]);
+			//PrtStat();
 		}
 	}
 	EndP.SetPos(CurP.GetX(), CurP.GetY());
@@ -74,6 +77,7 @@ int VecEnc::Encrypt() {
 	return true;
 }
 int VecEnc::Decrypt() {
+	InitCurP();
 	if (IsCharToVecMapEmpty()) { return false; }
 	if (IsVecToCharMapEmpty()) { return false; }
 
@@ -82,10 +86,11 @@ int VecEnc::Decrypt() {
         CharToVec(StrToDec[i], VecToCharMap, Vec1);
         CharToVec(StrToDec[size_t(i) + 1], VecToCharMap, Vec2);
         DecStr.push_back(FindChar(CurP, CharToVecMap, Vec1, Vec2));
-    }
+		//PrtStat();
+	}
 
 	EndP.SetPos(CurP.GetX(), CurP.GetY());
-	InitCurP();
+	
 	return true;
 }
 int VecEnc::IsCharToVecMapEmpty() {
@@ -96,4 +101,23 @@ int VecEnc::IsVecToCharMapEmpty() {
 }
 void VecEnc::InitCurP() {
 	CurP.SetPos(StP.GetX(), StP.GetY());
+}
+//FOR DBG
+void VecEnc::PrtStP() {
+	std::cout << "StP (" << StP.GetX() << " ," << StP.GetY() << ")" << std::endl;
+}
+void VecEnc::PrtEndP() {
+	std::cout << "EndP (" << EndP.GetX() << " ," << EndP.GetY() << ")" << std::endl;
+}
+void VecEnc::PrtCurP() {
+	std::cout << "CurP (" << CurP.GetX() << " ," << CurP.GetY() << ")" << std::endl;
+}
+void VecEnc::PrtStat() {
+	std::cout << "StP (" << StP.GetX() << " ," << StP.GetY() << ")" << std::endl;
+	std::cout << "CurP (" << CurP.GetX() << " ," << CurP.GetY() << ")" << std::endl;
+	std::cout << "EndP (" << EndP.GetX() << " ," << EndP.GetY() << ")" << std::endl;
+	std::cout << "MapSize : " << MapSize << std::endl;
+	std::cout << "Ischartovecmapempty : " << CharToVecMap.empty() << std::endl;
+	std::cout << "Isvectocharmapempty : " << VecToCharMap.empty() << std::endl;
+	std::cout << "Vec (" << Vec.GetX() << " ," << Vec.GetY() << ")" << std::endl;
 }
