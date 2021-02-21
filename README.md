@@ -2,9 +2,9 @@
 String Encrypt to vector <br/>
 ex)<br/>
 [Encrypt]<br/>
-    3 1 2      9 7 8<br/>
-    5 9 7      4 2 3<br/>
-    8 6 4      1 5 6<br/>
+    3 1 2&nbsp;&nbsp;9 7 8<br/>
+    5 9 7&nbsp;&nbsp;4 2 3<br/>
+    8 6 4&nbsp;&nbsp;1 5 6<br/>
  (Char to Vector) (Vector to Char)<br/>
 <br/>
 {Char to Vector Map}<br/>
@@ -19,9 +19,9 @@ Vector Diff to Char = [1, 0]<br/>
 '9' => '4'<br/><br/>
 
 [Decrypt]<br/>
-    3 1 2      9 7 8<br/>
-    5 9 7      4 2 3<br/>
-    8 6 4      1 5 6<br/>
+    3 1 2&nbsp;&nbsp;9 7 8<br/>
+    5 9 7&nbsp;&nbsp;4 2 3<br/>
+    8 6 4&nbsp;&nbsp;1 5 6<br/>
  (Char to Vector) (Vector to Char)<br/><br/>
 
  {Vector to Char Map}<br/>
